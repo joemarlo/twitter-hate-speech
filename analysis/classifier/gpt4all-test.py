@@ -37,4 +37,4 @@ def determine_if_hate(tweet):
 
 determine_if_hate(tweets.text[0])
 
-results = flagged_tweets.head(100).text.apply(determine_if_hate)
+results = tweets.head(100).text.apply(determine_if_hate)
