@@ -3,6 +3,13 @@
 # https://github.com/nomic-ai/gpt4all/blob/main/gpt4all-bindings/python/README.md
 # deactivate
 
+# TODO:
+# is this the LLM best model?
+# is there a GPU version available?
+# how to engineer the prompt to only include true/false?
+# how does it perform on the raw tweets?
+
+import sqlite3
 import pandas as pd
 from gpt4all import GPT4All
 # from nomic.gpt4all import GPT4AllGPU
@@ -10,7 +17,8 @@ from gpt4all import GPT4All
 # from transformers import LlamaTokenizer
 
 # read in all the previously flagged tweets
-flagged_tweets = pd.read_csv("Predictions/post_prediction_ID_patch.csv")
+con = sqlite3.connect("data/tweets.db")
+tweets = pd.read_sql_query("SELECT * FROM tweets LIMIT 10", con)
 
 # gptj = GPT4All("ggml-gpt4all-j-v1.3-groovy")
 gptj = GPT4All("ggml-vicuna-13b-1.1-q4_2")
@@ -27,13 +35,6 @@ def determine_if_hate(tweet):
     is_hate_speech = extract_resp(resp)
     return(is_hate_speech)
 
-determine_if_hate(flagged_tweets.text[1])
+determine_if_hate(tweets.text[0])
 
 results = flagged_tweets.head(100).text.apply(determine_if_hate)
-
-
-# TODO:
-# is this the best model?
-# is there a GPU version available?
-# how to engineer the prompt to only include true/false?
-# how does it perform on the raw tweets?
